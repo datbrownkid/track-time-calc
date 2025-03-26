@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Track Time Calculator</h2>
+    <label for="distance">Enter Distance (m):</label>
+    <input type="number" id="distance" placeholder="e.g. 400">
+    <br>
+    <label for="time">Enter Time (mm:ss.sss):</label>
+    <input type="text" id="time" placeholder="e.g. 00:59.500">
+    <br>
+    <button onclick="calculateSplits()">Calculate</button>
+    <h3>Estimated Splits:</h3>
+    <p id="result"></p>
+
+    <script>
+        function formatTime(seconds) {
+            if (seconds < 60) {
+                return seconds.toFixed(2) + " sec";
+            } else {
+                let minutes = Math.floor(seconds / 60);
+                let remainingSeconds = (seconds % 60).toFixed(2);
+                return `${minutes}:${remainingSeconds.padStart(5, '0')} min`;
+            }
+        }
+
+        function calculateSplits() {
+            let distance = parseFloat(document.getElementById("distance").value);
+            let timeStr = document.getElementById("time").value;
+            
+            let timeParts = timeStr.split(":"), totalSeconds;
+            if (timeParts.length === 2) {
+                totalSeconds = parseFloat(timeParts[0]) * 60 + parseFloat(timeParts[1]);
+            } else {
+                alert("Invalid time format. Use mm:ss.sss");
+                return;
+            }
+            
+            let splits = {
+                "200m": formatTime(totalSeconds / (distance / 200)),
+                "400m": formatTime(totalSeconds / (distance / 400)),
+                "800m": formatTime(totalSeconds / (distance / 800)),
+                "1500m": formatTime(totalSeconds / (distance / 1500))
+            };
+            
+            document.getElementById("result").innerHTML = `
+                200m: ${splits["200m"]} <br>
+                400m: ${splits["400m"]} <br>
+                800m: ${splits["800m"]} <br>
+                1500m: ${splits["1500m"]}
+            `;
+        }
+    </script>
+</body>
+</html>
